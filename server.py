@@ -3,8 +3,7 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import base64
 from sys import argv
-
-from requests import post
+import argparse
 
 
 class S(BaseHTTPRequestHandler):
@@ -23,7 +22,7 @@ class S(BaseHTTPRequestHandler):
             self.headers["Content-Length"]
         )  # <--- Gets the size of data
         post_data = self.rfile.read(content_length)
-        if len(argv) > 1:
+        if args.f != None:
             try:
                 output = open(f"{argv[1]}", "wb")
             except:
@@ -35,13 +34,15 @@ class S(BaseHTTPRequestHandler):
             except:
                 print("Error decoding data from base64")
                 exit(1)
-            else:
-                try:
-                    output_data = base64.b64decode(post_data)
-                    print(output_data)  # <--- Gets the data itself
-                except:
-                    print("Error decoding data from base64")
-                    exit(1)
+        else:
+            try:
+                output_data = base64.b64decode(post_data)
+                print("")
+                print(output_data.decode())  # <--- Gets the data itself
+                print("")
+            except:
+                print("Error decoding data from base64")
+                exit(1)
 
         print("File received successfully")
 
@@ -50,8 +51,8 @@ class S(BaseHTTPRequestHandler):
         exit(1)
 
 
-def run(server_class=HTTPServer, handler_class=S, port=8000):
-    server_address = ("", port)
+def run(server_class=HTTPServer, handler_class=S):
+    server_address = ("", args.p)
     httpd = server_class(server_address, handler_class)
     print("Listening for connections\n")
     try:
@@ -63,19 +64,21 @@ def run(server_class=HTTPServer, handler_class=S, port=8000):
 
 if __name__ == "__main__":
 
-    if len(argv) < 2:
-        print(
-            """Usage::
-    ./server.py [<output-file>] [<port>]
-    ./server.py [<output-file>]
-    ./server.py
-    """
-        )
-        exit(1)
-        port = int(argv[1])
-        run(port)
-        print(f"listening on port {port}")
-    else:
-        port = 8000
-        print(f"listening on port {port}")
-        run()
+    parser = argparse.ArgumentParser(description="PowerShell Web Beacon")
+    parser.add_argument(
+        "-f",
+        type=str,
+        help="file to save output to, default is stdout",
+        default=None,
+    )
+    parser.add_argument(
+        "-p",
+        type=str,
+        help="port for the server to listen at, default is 8000",
+        default=8000,
+    )
+    args = parser.parse_args()
+
+    port = args.p
+    run()
+    print(f"listening on port {port}")
