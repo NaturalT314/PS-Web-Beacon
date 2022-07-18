@@ -14,19 +14,34 @@ class S(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_POST(self):
-        try:
-            output = open(f"{argv[1]}", "wb")
-        except:
-            print("Error opening file")
+        if len(argv) > 1:
+            try:
+                output = open(f"{argv[1]}", "wb")
+            except:
+                print("Error opening file")
         content_length = int(
             self.headers["Content-Length"]
         )  # <--- Gets the size of data
         post_data = self.rfile.read(content_length)
-        try:
-            output_data = base64.b64decode(post_data)
-            output.write(output_data)  # <--- Gets the data itself
-        except:
-            print("Error decoding data from base64")
+        if len(argv) > 1:
+            try:
+                output = open(f"{argv[1]}", "wb")
+            except:
+                print("Error opening file")
+                exit(1)
+            try:
+                output_data = base64.b64decode(post_data)
+                output.write(output_data)  # <--- Gets the data itself
+            except:
+                print("Error decoding data from base64")
+                exit(1)
+            else:
+                try:
+                    output_data = base64.b64decode(post_data)
+                    print(output_data)  # <--- Gets the data itself
+                except:
+                    print("Error decoding data from base64")
+                    exit(1)
 
         print("File received successfully")
 
@@ -53,6 +68,7 @@ if __name__ == "__main__":
             """Usage::
     ./server.py [<output-file>] [<port>]
     ./server.py [<output-file>]
+    ./server.py
     """
         )
         exit(1)
