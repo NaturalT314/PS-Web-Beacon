@@ -5,7 +5,7 @@ A simple http server to transfer files from windows to any other machine. This m
 On origin
 
 ```
-$b64 = [System.convert]::ToBase64String((Get-Content -Path '[FILE-PATH]' -Encoding Byte))
+$b64 = [System.convert]::ToBase64String((Get-Content -Path '[<FILE-PATH>]' -Encoding Byte))
 Invoke-WebRequest -Uri http://[<IP>]:[<PORT>] -Method POST -Body $b64
 ```
 
