@@ -73,7 +73,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "-p",
-        type=str,
+        type=int,
         help="port for the server to listen at, default is 8000",
         default=8000,
     )
